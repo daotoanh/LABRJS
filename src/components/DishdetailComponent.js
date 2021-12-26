@@ -58,7 +58,7 @@ function RenderComments({ comments }) {
 
 const DishDetail = (props) => {
 
-     // nhận data từ parent-component MenuComponent
+    
 
 
     if (props.dish != null) {
