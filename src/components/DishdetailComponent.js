@@ -30,7 +30,7 @@ function RenderDish({ dish }) {
     }
 }
 
-function RenderComments({ comments, postComment, dishId }) {
+function RenderComments({ comments, addComment, dishId }) {
 
     if (comments == null) {
         return <div></div>
@@ -56,7 +56,7 @@ function RenderComments({ comments, postComment, dishId }) {
             <ul className='list-unstyled'>
                 {cmnts}
             </ul>
-            <CommentForm dishId={dishId} postComment={postComment} />
+            <CommentForm dishId={dishId} addComment={addComment}/>
         </div>
     )
 }
@@ -83,7 +83,7 @@ class CommentForm extends Component {
     }
     handleSubmit(values) {
         this.toggleModal();
-        this.props.postComment(this.props.dishId, values.rating, values.comment);
+        this.props.addComment(this.props.dishId, values.rating, values.author, values.comment)
     }
     render() {
         return (
@@ -107,8 +107,8 @@ class CommentForm extends Component {
                             </Row>
                             <Row className="form-group">
                                 <Col>
-                                <Label htmlFor="yourname" md={4}>Your Name</Label>
-                                <Control.text model=".yourname" id="yourname" name="yourname"
+                                <Label htmlFor="author" md={4}>Your Name</Label>
+                                <Control.text model=".author" id="author" name="author"
                                     className="form-control"
                                     validators={{
                                         required, minLenght: minLenght(3), maxLenght: maxLenght(15)
@@ -146,9 +146,6 @@ class CommentForm extends Component {
 
 const DishDetail = (props) => {
 
-
-
-
     if (props.dish != null) {
 
         return (
@@ -167,8 +164,9 @@ const DishDetail = (props) => {
                 <div className="row">
                     <RenderDish dish={props.dish} />
                     <RenderComments comments={props.comments}
-                        postComment={props.postComment}
-                        dishId={props.dish._id} />
+                    addComment={props.addComment}
+                    dishId={props.dish.id}
+                     />
                 </div>
             </div>
         )
