@@ -4,25 +4,33 @@ import { Link } from 'react-router-dom'
 import { Control, LocalForm, Errors } from 'react-redux-form';
 import { Loading } from './LoadingComponent'
 import { baseUrl } from "../shared/baseUrl";
+import { FadeTransform, Fade, Stagger } from 'react-animation-components'
 
 const required = (val) => val && val.length
-const maxLenght = (len) => (val) => !(val) || (val.length <= len )
-const minLenght = (len) => (val) => (val) && (val.length >= len )
+const maxLenght = (len) => (val) => !(val) || (val.length <= len)
+const minLenght = (len) => (val) => (val) && (val.length >= len)
 
 
 function RenderDish({ dish }) {
 
     if (dish != null) {
         return (
-            <Card className="col-12 col-md-5 m-1">
-                <Card className="card" cursor="pointer" onClick={() => this.onDishSelect(dish)}>
-                    <CardImg src={baseUrl + dish.image} className="card-img-top" alt={dish.name} style={{ width: "100%" }} />
-                    <CardBody>
-                        <CardTitle>{dish.name}</CardTitle>
-                        <CardText>{dish.description}</CardText>
-                    </CardBody>
+            <div className="col-12 col-md-5 m-1">
+            <FadeTransform in
+                transformProps={{
+                    exitTransform: 'scale(0.5) translateY(-50%)'
+                }}>
+                <Card>
+                    <Card className="card" cursor="pointer" onClick={() => this.onDishSelect(dish)}>
+                        <CardImg src={baseUrl + dish.image} className="card-img-top" alt={dish.name} style={{ width: "100%" }} />
+                        <CardBody>
+                            <CardTitle>{dish.name}</CardTitle>
+                            <CardText>{dish.description}</CardText>
+                        </CardBody>
+                    </Card>
                 </Card>
-            </Card>
+            </FadeTransform>
+            </div>
         );
     } else {
         return (
@@ -39,6 +47,8 @@ function RenderComments({ comments, postComment, dishId }) {
 
     const cmnts = comments.map(comment => {
         return (
+            <Stagger in>
+            <Fade in>
             <li key={comment.id}>
                 <p>{comment.comment}</p>
                 <p>--{comment.author}
@@ -49,15 +59,17 @@ function RenderComments({ comments, postComment, dishId }) {
                     }).format(new Date(Date.parse(comment.date)))}
                 </p>
             </li>
+            </Fade>
+            </Stagger>
         )
     })
     return (
         <div className='col-12 col-md-5 m-1'>
             <h4> Comments </h4>
             <ul className='list-unstyled'>
-                {cmnts}
+                        {cmnts}
             </ul>
-            <CommentForm dishId={dishId} postComment={postComment}/>
+            <CommentForm dishId={dishId} postComment={postComment} />
         </div>
     )
 }
@@ -108,14 +120,14 @@ class CommentForm extends Component {
                             </Row>
                             <Row className="form-group">
                                 <Col>
-                                <Label htmlFor="author" md={4}>Your Name</Label>
-                                <Control.text model=".author" id="author" name="author"
-                                    className="form-control"
-                                    validators={{
-                                        required, minLenght: minLenght(3), maxLenght: maxLenght(15)
-                                    }}    
-                                />
-                                <Errors
+                                    <Label htmlFor="author" md={4}>Your Name</Label>
+                                    <Control.text model=".author" id="author" name="author"
+                                        className="form-control"
+                                        validators={{
+                                            required, minLenght: minLenght(3), maxLenght: maxLenght(15)
+                                        }}
+                                    />
+                                    <Errors
                                         className='text-danger'
                                         model=".yourname"
                                         show="touched"
@@ -124,7 +136,7 @@ class CommentForm extends Component {
                                             minLenght: "Must be greater than 2 characters",
                                             maxLenght: "Must be 15 characters or less"
                                         }}
-                                    /> 
+                                    />
                                 </Col>
                             </Row>
                             <Row className="form-group">
@@ -146,8 +158,8 @@ class CommentForm extends Component {
 }
 
 const DishDetail = (props) => {
-    if(props.isLoading) {
-        return(
+    if (props.isLoading) {
+        return (
             <div className="container">
                 <div className="row">
                     <Loading />
@@ -156,8 +168,8 @@ const DishDetail = (props) => {
         )
     }
 
-    else if(props.errMess) {
-        return(
+    else if (props.errMess) {
+        return (
             <div className="container">
                 <div className="row">
                     <h4>{props.errMess}</h4>
@@ -184,9 +196,9 @@ const DishDetail = (props) => {
                 <div className="row">
                     <RenderDish dish={props.dish} />
                     <RenderComments comments={props.comments}
-                    postComment={props.postComment}
-                    dishId={props.dish.id}
-                     />
+                        postComment={props.postComment}
+                        dishId={props.dish.id}
+                    />
                 </div>
             </div>
         )
